@@ -99,6 +99,14 @@ $("#composePage").live("pageinit", function(event) {
 $("#viewPage").live("pageinit", function(event){
 	var page = $("#viewPage");
 	var currentUser = Parse.User.current();
+	$("#update",page).click(function(){
+		$.mobile.changePage( "#viewPage", { allowSamePageTransition:true} );
+	});
+});
+
+$("#viewPage").live("pageshow", function(event){
+	var page = $("#viewPage");
+	var currentUser = Parse.User.current();
 	
 	if (currentUser) {
 		$("#user",page).html(currentUser.getUsername());
@@ -108,21 +116,35 @@ $("#viewPage").live("pageinit", function(event){
 	}
 	
 	var haiku = Parse.Object.extend("Haiku");
+	var sstring = $("#searchfor",page).val();
 	var query = new Parse.Query(haiku);
+	query.limit(5);
+	query.descending("updatedAt");
+	query.contains("poem",sstring);
 	//query.equalTo("parent",currentUser);
 	query.find({
 		success: function(haikus){
 			var thetime = Date();
 			var results="";
+			if (haikus.length==0) {
+				results="<li>No matching poems were found</li>";
+			}
 			for (i =0; i<haikus.length; i++) {
 			poem = haikus[i];
 			var title = poem.get("title");
+			var updatedAt = poem.updatedAt;
 			var descr = poem.get("descr");
 			var poem = poem.get("poem");
+
+			
+			//var par  = poem.get("parent");
 			results = results + 
 			"\n<li>"
 			+"<h1>"+title+"</h1>"
-			+"<span>["+descr+"]</span>"
+			+"<div style='text-style:italic'>["+descr+"]</div>"
+	        +"<div>"+ updatedAt +"</div>\n" 
+		   // +"<div>"+ par +"</div>\n" 
+	
 			+"<pre class='haiku'>"+poem+"</pre>";
 			}
 			results = results+"\n </ul>";
