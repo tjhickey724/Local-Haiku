@@ -1,17 +1,47 @@
 // Parse.initialize("....",".....");  
 // this is where the parse key info goes...
 // you need to go to parse.com, create an account and copy that info here!!!
+// It is not a good idea though to put it into a public git repository
+// which is why I put it in a separate file hidden by .gitignore !!
 
+
+$("#index").live("pageshow", function(event){
+	// this code is evaluated each time the page is shown!
+	var page = $("#index");
+	var currentUser = Parse.User.current();
+	if (currentUser) {
+		$("#user",page).html("User: "+ currentUser.getUsername());
+		$("#login",page).hide();
+		$("#register",page).hide();
+		$("#logoutLink",page).show();
+
+	} else {
+		$("#user",page).html("no one is logged in");
+		$("#logoutLink",page).hide();
+		$("#login",page).show();
+		$("#register",page).show();
+
+	}
+});
+		
 $("#index").live("pageinit", function(event){
+	// this is evaluated when the page is first initialized
+	// but not when navigated to by changepage ...
+	
+	var page = $("#index");
+	var currentUser = Parse.User.current();
+	
 	$("#register").click(function(){
 		$.mobile.changePage( "#registerpage", { transition: "slideup"} );
 	});
 	$("#login").click(function(){
-		$.mobile.changePage( "#loginpage", { transition: "slideup"} );
+		$.mobile.changePage( "#loginPage", { transition: "slideup"} );
 	});
 	$("#logoutLink").click(function(){
 		Parse.User.logOut();
 		$("#status", page).html("you have successfully logged off");
+		$("#user",page).html("no one is logged in");
+		$.mobile.changePage("#index",{allowSamePageTransition:true});
 	});
 	$("#viewLink").click(function(){
 		$.mobile.changePage( "#viewPage", { transition: "slideup"} );
@@ -20,27 +50,26 @@ $("#index").live("pageinit", function(event){
 		$.mobile.changePage( "#composePage", { transition: "slideup"} );
 	});
 
-	var page = $("#index");
-	var currentUser = Parse.User.current();
-	if (currentUser) {
-		$("#user",page).html(currentUser.getUsername());
-	} else {
-		$("#user",page).html("no one is logged in");
-		return;
-	}
+
 });
 
-$("#composePage").live("pageinit", function(event) {
-	var page = $("#composePage");
+
+
+$("#composePage").live("pageshow", function(event) {
 	var currentUser = Parse.User.current();
-	
+	var page = $("#composePage");
+		
 	if (currentUser) {
 		$("#user",page).html(currentUser.getUsername());
 	} else {
 		$("#user",page).html("You must be logged in to compose a haiku");
 		return;
 	}
+});
+
 	
+$("#composePage").live("pageinit", function(event) {
+	var page = $("#composePage");
 	
 	$("#publish",page).live("click",function(e) {
 		var currentUser = Parse.User.current();
@@ -55,7 +84,7 @@ $("#composePage").live("pageinit", function(event) {
 	    haikuObject.save({
 	      success: function(object) {
 			$("#status",page).html("success!");
-			$.mobile.changePage("#index",{transition:"slideup"});
+			$.mobile.changePage( "demo.html", {transition: "slideup"} );
 	      },
 	      error: function(model, error) {
 			$("#status",page).html("error is "+error);
@@ -69,12 +98,6 @@ $("#composePage").live("pageinit", function(event) {
 
 $("#viewPage").live("pageinit", function(event){
 	var page = $("#viewPage");
-	updateviewPage(page);
-});
-
-
-function updateviewPage(page) {
-// this retrieves and displays the info about local poems
 	var currentUser = Parse.User.current();
 	
 	if (currentUser) {
@@ -114,7 +137,7 @@ function updateviewPage(page) {
 		}
 
 	});	
-}
+});
 
 
 $("#registerpage").live("pageinit", function(event) {
@@ -135,9 +158,7 @@ $("#registerpage").live("pageinit", function(event) {
 		user.signUp(null, {
 		  success: function(user) {
 		    // Hooray! Let them use the app now.
-			alert("Congratulations! You are now a registered user!!"
-			 +"username="+$("#username",page).val()
-			 +" and pw="+$("#password",page).val()  );
+			$.mobile.changePage( "#index", {transition: "slideup"} );
 		  },
 		  error: function(user, error) {
 		    // Show the error message somewhere and let the user try again.
@@ -151,8 +172,8 @@ $("#registerpage").live("pageinit", function(event) {
 });
 
 
-$("#loginpage").live("pageinit", function(event) {
-	var page = $("#loginpage");
+$("#loginPage").live("pageinit", function(event) {
+	var page = $("#loginPage");
 
 	var currentUser = Parse.User.current();
 	Parse.User.logOut();
@@ -171,7 +192,6 @@ $("#loginpage").live("pageinit", function(event) {
 		Parse.User.logIn(myname, mypass, {
 		  success: function(user) {
 		    // Do stuff after successful login.
-		     alert("You are now logged in "+user);
 			var currentUser = Parse.User.current();
 			if (currentUser) {
 				$("#status",page).html("The current user is "+currentUser);
@@ -180,7 +200,7 @@ $("#loginpage").live("pageinit", function(event) {
 				$("#status",page).html("no one is logged in ... ");
 			    // show the signup or login page
 			}
-		    $.mobile.changePage( "#index", { transition: "slideup"} );
+		    $.mobile.changePage( "demo.html", {transition: "slideup"} );
 		
 		  },
 		  error: function(user, error) {
@@ -193,7 +213,4 @@ $("#loginpage").live("pageinit", function(event) {
 
 	
 });
-
-
-
 
