@@ -71,6 +71,33 @@
 
 <div data-role="page" id="viewPage">
 
+	<div data-role="header">
+		<h1>Local Haiku</h1>
+	</div>
+
+	<div data-role="content">
+
+		<div data-type="horizontal">
+			<div id ="user">No user yet</div>
+			<div id="thetime">the time </div>
+			<div id="status"></div>
+		</div>
+		
+		<div data-role="controlgroup" data-type="horizontal">
+			<a id="update" data-role="button">refresh </a>  
+			<a id="composeLink" data-role="button">Compose</a> 
+			<a href="#index" data-role="button">back to index</a> 
+	    </div>	
+	
+		
+		<div id="poems">
+			<ul id="poemList" data-role="listview">
+			</ul>
+		</div>
+		
+	</div>
+</div>
+
 <div data-role="page" id="loginpage">
 
 	<div data-role="header">
@@ -149,6 +176,7 @@
 		
 	</div>
 </div>
+
 
 </body>
 </html>

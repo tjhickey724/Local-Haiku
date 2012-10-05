@@ -99,8 +99,8 @@ function updateviewPage(page) {
 			results = results + 
 			"\n<li>"
 			+"<h1>"+title+"</h1>"
-			+"<span>"+descr+"</span>"
-			+"<div>"+poem+"</div>"
+			+"<span>["+descr+"]</span>"
+			+"<pre class='haiku'>"+poem+"</pre>";
 			}
 			results = results+"\n </ul>";
 			$("#thetime",page).html(thetime);
